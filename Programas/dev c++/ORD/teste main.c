@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main(int argc, char **argv) {
 
+int main(int argc, char **argv) {
+	
+	
+	
     if (argc < 3) {
         fprintf(stderr, "Numero incorreto de argumentos!\n");
         fprintf(stderr, "Modo de uso:\n");
@@ -25,4 +28,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-s
+
