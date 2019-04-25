@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc, char **argv) {
+
+    if (argc < 3) {
+        fprintf(stderr, "Numero incorreto de argumentos!\n");
+        fprintf(stderr, "Modo de uso:\n");
+        fprintf(stderr, "$ %s (-i|-e) nome_arquivo\n", argv[0]);
+        exit(1);
+    }
+
+    if (strcmp(argv[1], "-i") == 0) {
+        printf("Modo de importacao ativado ... nome_arq_importacao = %s\n", argv[2]);
+		// chame a função de importacao passando o nome_arq_importacao por parametro
+		
+    } else if (strcmp(argv[1], "-e") == 0) {
+        printf("Modo de execucao de operacoes ativado ...nome_arq_comandos = %s\n", argv[2]);
+		//chame a funcao de execucao de comandos passando o nome_arq_comandos por parametro
+		
+    } else {
+        fprintf(stderr, "Opcao \"%s\" nao suportada!\n", argv[1]);
+    }
+
+    return 0;
+}
+
+
+Este programa deve ser salvo em um diretório (no meu caso salvei em C:\teste), compilado e para executar devemos usar o prompt de comando. 
+O programa será chamado a executar diretamente pelo prompt. Para tanto chamamos o programa pelo nome e passamos os argumentos. Veja o exemplo 
+da chamada de execução na primeira linha da figura.
+
+
+#include <stdio.h>
+#include <conio.h>
+int main( int argc, char *argv[ ] )
+{
+  int Resultado, valorA=0, valorB=0;
+  printf("\nMultiplicando valores passados na linha de comando\n");
+  
+  //atoi converte de alfanumérico para inteiro
+  valorA = atoi(argv[1]);
+  valorB = atoi(argv[2]);
+  
+  Resultado = valorA * valorB;
+  printf("\n%d X %d = %d\n",valorA,valorB,Resultado);
+  getch();
+  return 0;
+}
+
+
+
+
+C:\Users\vinicius.sibin\Documents\Facul\Eclipse\dev c++\ORD
+
+
+
+
+
+Abra o cmd > navegue ate a pasta onde ta o executável > digite nome_arquivo.exe (-i|-e) nome_arquivo
+
+
+
+
+
+
