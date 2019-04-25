@@ -1,0 +1,115 @@
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+#define DELIM_STR "|"
+#define MAX_REC_SIZE 512
+
+/*
+    Tipo VetChaves
+*/
+typedef struct {
+    int id;
+    int offset;
+} info_chave;
+
+/*
+    Funcao auxiliar para ordenação do vetor
+*/
+void ordena_vetor(int n, info_chave* vetor){
+    int i, d, posicao;
+    info_chave troca;
+
+    for ( i = 0 ; i < ( n - 1 ) ; i++ ){
+        posicao = i;
+        for ( d = i + 1 ; d < n ; d++ ){
+                if ( vetor[posicao].id > vetor[d].id )
+                    posicao = d;
+        }
+        if ( posicao != i ){
+                troca = vetor[i];
+                vetor[i] = vetor[posicao];
+                vetor[posicao] = troca;
+        }
+    }
+}
+
+/* funcao que le um registro do arquivo fd para a string buffer
+*/
+int get_rec(FILE* fd, char* buffer, int size){
+
+      short rec_lgth;
+
+      if (fread(&rec_lgth, sizeof(rec_lgth), 1, fd) == 0) // get record length
+         return 0;
+
+      if (rec_lgth < size) {	      
+		  rec_lgth = fread(buffer, sizeof(char), rec_lgth, fd); // read record
+	      buffer[rec_lgth] = '\0';
+	      return rec_lgth;	
+	  }
+	  else {	  	
+		  printf ("Buffer overflow\n");
+		  return 0;
+	  }	  
+}
+
+/* funcao que escreve registro do buffer e o seu tamanho size no arquivo fd
+*/
+void put_rec(FILE* fd, char* buffer, short size){
+	fwrite(&size, sizeof(size), 1, fd);
+    fwrite(buffer, sizeof(char), size, fd);  
+}
+
+int main(){
+    FILE * infd, *outfd;
+    short tam_reg;
+    char buffer[MAX_REC_SIZE];
+    char* reg_id;
+    int reg_offset;
+    int total_reg;
+    int i;
+
+    if ((infd = fopen("dados.dat", "rb")) == NULL) {
+        perror("Erro na abertura de dados.dat\n");
+        exit(1);
+    } else printf("Arquivo dados.dat aberto com sucesso\n");
+
+	if ((outfd = fopen("dados-ord.dat", "wb")) == NULL) {
+        perror("Erro na criacao de dados-ord.dat\n");
+        exit(1);
+    } else printf("Arquivo dados-ord.dat criado com sucesso\n");
+
+    fread(&total_reg, sizeof(total_reg), 1, infd);
+	fwrite(&total_reg, sizeof(total_reg), 1, outfd);
+
+    info_chave vet_chaves[total_reg];
+
+    reg_offset = sizeof(total_reg);
+
+    for (i = 0; i < total_reg; i++) {
+		tam_reg = get_rec(infd, buffer, MAX_REC_SIZE);
+        reg_id = strtok(buffer, DELIM_STR);
+        vet_chaves[i].id = atoi(reg_id);
+        vet_chaves[i].offset = reg_offset;
+
+        reg_offset += tam_reg + sizeof(tam_reg);
+    }
+
+    ordena_vetor(total_reg, vet_chaves);
+    
+    printf("Vetor ordenado gerado com sucesso\n");
+    
+    for (i = 0; i < total_reg; i++) {
+    	reg_offset = vet_chaves[i].offset;
+    	fseek(infd, reg_offset, SEEK_SET);
+		tam_reg = get_rec(infd, buffer, MAX_REC_SIZE);
+    	put_rec(outfd, buffer, tam_reg);
+	}
+	
+	printf("Arquivo dados-ord.dat escrito com sucesso\n");
+	
+	fclose(infd);
+	fclose(outfd);
+    return 0; 
+}

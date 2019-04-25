@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_REC_SIZE 512
+#define DELIM_STR "|"
+
+int input(char*, int);
+int get_rec(FILE*, char*, int);
+
+int main(){
+
+    FILE* fd;
+    char filename[15];
+    char buffer[MAX_REC_SIZE];
+    char * field;
+    int rec_count;
+	int fld_count;
+    int rec_lgth;
+
+    printf("Entre com o nome do arquivo a ser aberto: ");
+    input(filename, 15);
+
+    if ((fd=fopen(filename,"rb")) == NULL) {
+       printf("Erro na abertura do arquivo --- programa abortado\n");
+       exit(1);
+    }
+
+    rec_count = 0;
+    rec_lgth = get_rec(fd, buffer, MAX_REC_SIZE);
+	
+	while (rec_lgth > 0) {
+
+		printf("Registro %d\n", ++rec_count);
+		fld_count = 0;
+		
+		field = strtok(buffer, DELIM_STR);		
+		while (field != NULL) {
+			printf("\tCampo %d: %s\n",++fld_count, field);
+			field = strtok(NULL, DELIM_STR);
+		}
+		
+		printf("\n");
+		rec_lgth = get_rec(fd, buffer, MAX_REC_SIZE);
+    }
+
+    fclose(fd);
+}
+
+/* função que lê um registro do arquivo fd para a string buffer
+*/
+int get_rec(FILE* fd, char* buffer, int size){
+
+      int rec_lgth;
+
+      if (fread(&rec_lgth, sizeof(rec_lgth), 1, fd) == 0) // get record length
+         return 0;
+
+      if (rec_lgth < size) {	      
+		  rec_lgth = fread(buffer, sizeof(char), rec_lgth, fd); // read record
+	      buffer[rec_lgth] = '\0';
+	      return rec_lgth;	
+	  }
+	  else {	  	
+		  printf ("Buffer overflow\n");
+		  return 0;
+	  }	  
+}
+
+/* função que lê uma linha do stdin para a string str 
+*/
+int input(char * str, int size) {    
+
+	int i = 0;    
+	char c = getchar();    
+
+	while (c != '\n') {        
+		if (size > 0) {            
+			str[i] = c;            
+			i++;            
+			size--;        
+		}        
+		c = getchar();   
+	}    
+
+	str[i] = '\0';    
+	return i;
+}

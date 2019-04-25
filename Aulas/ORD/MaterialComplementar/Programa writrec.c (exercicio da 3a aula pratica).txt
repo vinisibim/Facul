@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_REC_SIZE 512
+#define DELIM_STR "|"
+
+void fld_to_buff(char*, char*);
+int input(char*, int);
+
+char* prompt[] = {
+     "Digite o Sobrenome, ou <ENTER> para sair: ",
+     "                           Primeiro nome: ",
+     "                                Endereco: ",
+     "                                  Cidade: ",
+     "                                  Estado: ",
+     "                                     CEP: ",
+     "" //null string to terminate the prompt loop
+};
+
+int main() {
+	   FILE* fd;
+       char buffer[MAX_REC_SIZE];
+	   char field[50];
+       char filename[15];
+       int i;
+       int rec_lgth; //4 bytes
+       int field_lgth;
+
+       printf("Entre com o nome do arquivo a ser criado: ");
+       input(filename, 15);
+
+       if ((fd=fopen(filename,"w")) == NULL) {
+          printf("Erro na criação do arquivo --- programa abortado\n");
+          exit(1);
+       }
+
+       printf("\n\n%s", prompt[0]);
+       field_lgth = input(field, 50);
+
+       while (field_lgth > 0){
+
+             buffer[0] = '\0'; //zera o buffer
+             fld_to_buff(buffer,field);
+             
+             for (i=1; prompt[i] != ""; i++){
+                 printf("%s", prompt[i]);
+                 input(field, 50);
+                 fld_to_buff(buffer, field);
+             }
+
+             rec_lgth = strlen(buffer); //calcula o tamanho do registro que está no buffer
+             fwrite(&rec_lgth, sizeof(rec_lgth), 1, fd); //grava o tamanho
+             fwrite(buffer, sizeof(char), rec_lgth, fd); // grava o buffer como uma sequencia de bytes
+
+             /* prepara nova entrada -- reiniciar o loop */
+             printf("\n\n%s", prompt[0]);
+             field_lgth = input(field, 50);
+
+       } // end while
+       
+       fclose(fd);
+       return 0;
+} // end main
+
+/* função que adiciona ao buffer a string field e o delimitador "|"
+*/
+void fld_to_buff(char * buffer, char * field){
+	
+	strcat(buffer, field); 
+    strcat(buffer, DELIM_STR);
+
+}
+
+
+/* função que lê uma linha do stdin para a string str 
+*/
+int input(char * str, int size) {    
+
+	int i = 0;    
+	char c = getchar();    
+
+	while (c != '\n') {        
+		if (size > 0) {            
+			str[i] = c;            
+			i++;            
+			size--;        
+		}        
+		c = getchar();   
+	}    
+
+	str[i] = '\0';    
+	return i;
+}
