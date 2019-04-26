@@ -6,6 +6,8 @@
 
 int main(int argc, char **argv) {
 	setlocale(LC_ALL, "Portuguese");
+	FILE* lista;
+	lista = argv[2];
 	
     if (argc < 3) {
         fprintf(stderr, "Numero incorreto de argumentos!\n");
@@ -29,9 +31,6 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-
-
-
 menuPrincipal(){
 	
 	int escolha;
@@ -44,6 +43,7 @@ menuPrincipal(){
 }
 
 menuSecundario (int menu){
+	
 	int escolha, opcao;
 	if(menu == 1){
 		printf("Escolha uma das opções abaixo para executa-la\n");
@@ -59,8 +59,7 @@ menuSecundario (int menu){
 			break;
 			
 			case 2:
-				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				listaFilmes(lista);
 			break;
 			
 			case 9:
@@ -142,9 +141,58 @@ menuSecundario (int menu){
 	
 }
 
+int input(char * str, int size) {    
 
+	int i = 0;    
+	char c = getchar();    
 
+	while (c != '\n') {        
+		if (size > 0) {            
+			str[i] = c;            
+			i++;            
+			size--;        
+		}        
+		c = getchar();   
+	}  
+}
 
+int readfield(FILE* fd, char* str, int size){
+	#define DELIM_CHR ';'
+    int i = 0;
+    char c = fgetc(fd);
 
+    while ( c != EOF && c != DELIM_CHR){
+		if (size > 0) { 
+			str[i] = c;
+			i++;
+			size--;
+		}
+        c = fgetc(fd);
+    }
 
- 
+    str[i] = '\0'; // anexa 'null' ao final da string
+    return i;
+}
+
+listaFilmes(FILE* fd) {
+    char str[30];
+    char filename[15];
+    int fld_count;
+    int field_length;
+
+    if ((fd = fopen("filmes.txt", "r")) == NULL) {
+       printf("Erro na abertura do arquivo --- programa abortado\n");
+       exit(1);
+    }
+    
+    	/* loop do programa principal -- chama a função 'readfield'
+	   enquanto a função tiver sucesso (retorno > 0) */
+    fld_count = 0;
+	field_length = readfield(fd, str, 30);
+	printf("ID      Nome do filme    Genero    Data de Lançamento   Tempo    Avaliação\n\n");
+    while (field_length > 0) {
+        printf("\t%s",str);
+		field_length = readfield(fd, str, 30);
+	}
+    fclose(fd);
+}
