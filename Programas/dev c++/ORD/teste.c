@@ -2,31 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
+#include <locale.h>
 
-void main()
-{
-  FILE *arq;
-  char Linha[100];
-  char *result;
-  int i;
+int main(int argc, char **argv) {
+	setlocale(LC_ALL, "Portuguese");
+	FILE* lista;
+	lista = argv[2];
+	
+    if (argc < 3) {
+        fprintf(stderr, "Numero incorreto de argumentos!\n");
+        fprintf(stderr, "Modo de uso:\n");
+        fprintf(stderr, "$ %s (-i|-e) nome_arquivo\n", argv[0]);
+        exit(1);
+    }
 
-  clrscr();
+    if (strcmp(argv[1], "-i") == 0) {
+        printf("\n\nModo de importacao ativado ... nome_arq_importacao = %s\n", argv[2]);
+		// chame a função de importacao passando o nome_arq_importacao por parametro
+		
+    } else if (strcmp(argv[1], "-e") == 0) {
+        printf("\n\nModo de execucao de operacoes ativado ...nome_arq_comandos = %s\n", argv[2]);
+		printf("\n\n\n%s", lista);
+		
+    } else {
+        fprintf(stderr, "Opcao \"%s\" nao suportada!\n", argv[1]);
+    }
 
-  // Abre um arquivo TEXTO para LEITURA
-  arq = fopen("filmes.txt", "rt");
-  if (arq == NULL)  // Se houve erro na abertura
-  {
-     printf("Problemas na abertura do arquivo\n");
-     return;
-  }
-  i = 1;
-  while (!feof(arq))
-  {
-	// Lê uma linha (inclusive com o '\n')
-      result = fgets(Linha, 100, arq);  // o 'fgets' lê até 99 caracteres ou até o '\n'
-      if (result)  // Se foi possível ler
-	  printf("Linha %d : %s",i,Linha);
-      i++;
-  }
-  fclose(arq);
+    return 0;
 }

@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 		
     } else if (strcmp(argv[1], "-e") == 0) {
         printf("\n\nModo de execucao de operacoes ativado ...nome_arq_comandos = %s\n", argv[2]);
-		menuPrincipal();
+		menuPrincipal(lista);
 		
     } else {
         fprintf(stderr, "Opcao \"%s\" nao suportada!\n", argv[1]);
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-menuPrincipal(){
+menuPrincipal(FILE* arq){
 	
 	int escolha;
 	printf("Você está no menu de ações, escolha uma ação abaixo para realiza-la.\n");
@@ -39,14 +39,14 @@ menuPrincipal(){
 	printf("\nResposta: ");
 	scanf("%i",&escolha);
 	printf("\n\n");
-	menuSecundario(escolha);	
+	menuSecundario(escolha, arq);	
 }
 
-menuSecundario (int menu){
+menuSecundario (int menu, FILE* arq){
 	
 	int escolha, opcao;
 	if(menu == 1){
-		printf("Escolha uma das opções abaixo para executa-la\n");
+		printf("Escolha uma das opções abaixo para executa-la.\n");
 		printf("1.Buscar filme pelo ID\n2.Visualizar lista de filmes\n9.Voltar ao menu Principal\n");
 		printf("\nResposta: ");
 		scanf("%i",&opcao);
@@ -54,21 +54,22 @@ menuSecundario (int menu){
 		
 		switch(opcao){
 			case 1:
-				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				busca(arq);
 			break;
 			
 			case 2:
-				listaFilmes(lista);
+				listaFilmes(arq);
+				busca(arq);
 			break;
 			
 			case 9:
-				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				menuPrincipal(arq);
 			break;
 			
 			default:
-				printf("ERRO!\nDigite somente o numero da opção desejada\n\n");
+				printf("ERRO!\nDigite somente o numero da opção desejada\n");
+				printf("Voltando ao menu principal\n\n");
+				menuPrincipal(arq);
 		}
 		
 	}
@@ -83,17 +84,17 @@ menuSecundario (int menu){
 		switch(opcao){
 			case 1:
 				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				menuPrincipal(arq);
 			break;
 			
 			case 2:
 				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				menuPrincipal(arq);
 			break;
 			
 			case 9:
 				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				menuPrincipal(arq);
 			break;
 			
 			default:
@@ -111,17 +112,17 @@ menuSecundario (int menu){
 		switch(opcao){
 			case 1:
 				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				menuPrincipal(arq);
 			break;
 			
 			case 2:
 				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				menuPrincipal(arq);
 			break;
 			
 			case 9:
 				printf("Ainda não implementada\n\n");
-				menuPrincipal();
+				menuPrincipal(arq);
 			break;
 			
 			default:
@@ -136,7 +137,7 @@ menuSecundario (int menu){
 	else{ //Pronto
 		printf("ERRO!\nDigite somente o numero da opção desejada.\n");
 		printf("\n\n");
-		menuPrincipal();
+		menuPrincipal(arq);
 	}
 	
 }
@@ -195,4 +196,48 @@ listaFilmes(FILE* fd) {
 		field_length = readfield(fd, str, 30);
 	}
     fclose(fd);
+}
+
+busca(FILE* arq){
+	int escolha = 0, i = 0;
+	
+	printf("Digite o ID desejado:\n\n");
+	printf("Resposta: ");
+	scanf("%f",escolha);
+	printf("\n\n");
+	if (escolha == 1){
+		printf("Ainda não implementada\n\n");
+		menuPrincipal(arq);
+	}
+	else if(escolha != 1){
+		printf("***ID digitado incorreto***\n");
+		printf("Deseja inserir outro ID ou voltar ao menu principal?\n");
+		printf("1- Inserir novo ID\n2- Voltar ao menu principal\n\n");
+		printf("Resposta: ");
+		scanf("%i",escolha);
+		printf("\n\n");
+		while(i<=4){
+			if(escolha == 1){
+				busca(arq);
+			}
+			else if(escolha == 2){
+				menuPrincipal(arq);
+			}
+			else if (i == 3){
+				printf("Você excedeu o limite de tentativas, redirecionando para o menu principal.");
+				menuPrincipal(arq);
+			}
+			else{
+				i++;
+			}
+		}
+	}
+}
+
+inserir(){
+	
+}
+
+remover(int id){
+	
 }
