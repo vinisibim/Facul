@@ -4,25 +4,30 @@
 #include <conio.h>
 #include <locale.h>
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) {//Pronto
 	setlocale(LC_ALL, "Portuguese");
-	FILE* lista;
-	lista = argv[2];
+	FILE *lista;
+	
 	
     if (argc < 3) {
         fprintf(stderr, "Numero incorreto de argumentos!\n");
-        fprintf(stderr, "Modo de uso:\n");
+        fprintf(stderr, "Modo de uso: ");
         fprintf(stderr, "$ %s (-i|-e) nome_arquivo\n", argv[0]);
         exit(1);
     }
 
     if (strcmp(argv[1], "-i") == 0) {
         printf("\n\nModo de importacao ativado ... nome_arq_importacao = %s\n", argv[2]);
-		// chame a função de importacao passando o nome_arq_importacao por parametro
+        if ((fopen(argv[2],"rb")) == NULL) {
+       		printf("\nErro na abertura do arquivo --- programa abortado\n");
+       		exit(1);
+    	}
+        
+		importacao(argv[2]);
 		
     } else if (strcmp(argv[1], "-e") == 0) {
         printf("\n\nModo de execucao de operacoes ativado ...nome_arq_comandos = %s\n", argv[2]);
-		menuPrincipal(lista);
+		menuPrincipal(argv[2]);
 		
     } else {
         fprintf(stderr, "Opcao \"%s\" nao suportada!\n", argv[1]);
@@ -31,7 +36,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-menuPrincipal(FILE* arq){
+menuPrincipal(FILE* arq){//Pronto
 	
 	int escolha;
 	printf("Você está no menu de ações, escolha uma ação abaixo para realiza-la.\n");
@@ -42,10 +47,10 @@ menuPrincipal(FILE* arq){
 	menuSecundario(escolha, arq);	
 }
 
-menuSecundario (int menu, FILE* arq){
+menuSecundario (int menu, FILE* arq){//Pronto
 	
 	int escolha, opcao;
-	if(menu == 1){
+	if(menu == 1){//Pronto
 		printf("Escolha uma das opções abaixo para executa-la.\n");
 		printf("1.Buscar filme pelo ID\n2.Visualizar lista de filmes\n9.Voltar ao menu Principal\n");
 		printf("\nResposta: ");
@@ -59,6 +64,7 @@ menuSecundario (int menu, FILE* arq){
 			
 			case 2:
 				listaFilmes(arq);
+				printf("\n\n");
 				busca(arq);
 			break;
 			
@@ -74,7 +80,7 @@ menuSecundario (int menu, FILE* arq){
 		
 	}
 	
-	else if(menu == 2){
+	else if(menu == 2){//Pronto
 		printf("Escolha uma das opções abaixo para executa-la\n");
 		printf("1.Inserir novo filme\n2.Visualizar lista de filmes\n9.Voltar ao menu Principal\n");
 		printf("\nResposta: ");
@@ -83,50 +89,52 @@ menuSecundario (int menu, FILE* arq){
 		
 		switch(opcao){
 			case 1:
-				printf("Ainda não implementada\n\n");
-				menuPrincipal(arq);
+				inserir(arq);
 			break;
 			
 			case 2:
-				printf("Ainda não implementada\n\n");
-				menuPrincipal(arq);
+				listaFilmes(arq);
+				printf("\n\n");
+				inserir(arq);
 			break;
 			
 			case 9:
-				printf("Ainda não implementada\n\n");
 				menuPrincipal(arq);
 			break;
 			
 			default:
-				printf("ERRO!\nDigite somente o numero da opção desejada\n\n");
+				printf("ERRO!\nDigite somente o numero da opção desejada.\n");
+				printf("Voltando ao menu principal.\n\n");
+				menuPrincipal(arq);
 		}
 	}
 	
-	else if(menu == 3){
+	else if(menu == 3){//Pronto
 		printf("Escolha uma das opções abaixo para executa-la\n");
-		printf("1.Excluir filme pelo ID\n2.Visualizar lista de filmes\n9.Voltar ao menu Principal\n");
+		printf("1.Remover filme pelo ID\n2.Visualizar lista de filmes\n9.Voltar ao menu Principal\n");
 		printf("\nResposta: ");
 		scanf("%i",&opcao);
 		printf("\n\n");
 		
 		switch(opcao){
 			case 1:
-				printf("Ainda não implementada\n\n");
-				menuPrincipal(arq);
+				remover(arq);
 			break;
 			
 			case 2:
-				printf("Ainda não implementada\n\n");
-				menuPrincipal(arq);
+				listaFilmes(arq);
+				printf("\n\n");
+				remover(arq);
 			break;
 			
 			case 9:
-				printf("Ainda não implementada\n\n");
 				menuPrincipal(arq);
 			break;
 			
 			default:
-				printf("ERRO!\nDigite somente o numero da opção desejada\n\n");
+				printf("ERRO!\nDigite somente o numero da opção desejada.\n");
+				printf("Voltando ao menu principal.\n\n");
+				menuPrincipal(arq);
 		}
 	}
 	
@@ -142,7 +150,7 @@ menuSecundario (int menu, FILE* arq){
 	
 }
 
-int input(char * str, int size) {    
+int input(char * str, int size) {//Pronto
 
 	int i = 0;    
 	char c = getchar();    
@@ -157,7 +165,7 @@ int input(char * str, int size) {
 	}  
 }
 
-int readfield(FILE* fd, char* str, int size){
+int readfield(FILE* fd, char* str, int size){//Pronto
 	#define DELIM_CHR ';'
     int i = 0;
     char c = fgetc(fd);
@@ -176,15 +184,16 @@ int readfield(FILE* fd, char* str, int size){
 }
 
 listaFilmes(FILE* fd) {
+
     char str[30];
     char filename[15];
     int fld_count;
     int field_length;
 
-    if ((fd = fopen("filmes.txt", "r")) == NULL) {
-       printf("Erro na abertura do arquivo --- programa abortado\n");
-       exit(1);
-    }
+    if ((fd = fopen("filmes.txt","rb")) == NULL) {
+       		printf("\nErro na abertura do arquivo --- programa abortado\n");
+       		exit(0);
+    	}
     
     	/* loop do programa principal -- chama a função 'readfield'
 	   enquanto a função tiver sucesso (retorno > 0) */
@@ -192,7 +201,7 @@ listaFilmes(FILE* fd) {
 	field_length = readfield(fd, str, 30);
 	printf("ID      Nome do filme    Genero    Data de Lançamento   Tempo    Avaliação\n\n");
     while (field_length > 0) {
-        printf("\t%s",str);
+        printf("\t%s|",str);
 		field_length = readfield(fd, str, 30);
 	}
     fclose(fd);
@@ -234,10 +243,16 @@ busca(FILE* arq){
 	}
 }
 
-inserir(){
-	
+inserir(FILE* arq){
+	printf("Ainda não implementada\n\n");
+				menuPrincipal(arq);
 }
 
-remover(int id){
-	
+remover(FILE* arq){
+	printf("Ainda não implementada\n\n");
+				menuPrincipal(arq);
+}
+
+importacao(FILE* arq){
+	printf(" ******SUCESSO*****");
 }
