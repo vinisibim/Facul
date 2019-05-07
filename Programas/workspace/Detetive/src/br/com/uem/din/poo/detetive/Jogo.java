@@ -14,17 +14,23 @@ public class Jogo {
 		System.out.print("Você é um Administrador ou um Jogador?\nResposta:");
 
 		String pessoa = scan.nextLine();
-		pessoa.toLowerCase();
+		String aux = pessoa.toLowerCase();
+		
+		System.out.println("palavra: "+ pessoa.toLowerCase());
 
-		if (pessoa.intern() == "administrador") {
-			System.out.println("Digite a senha de acesso administrativo\nSenha:");
+		if (aux.intern() == "administrador") {
+			System.out.println("Digite a senha de acesso administrativo\nSenha: ");
 			int senhaAdm = scan.nextInt();
 			admin.administrador(senhaAdm);
 		} 
-		else if (pessoa.intern() == "jogador") {
-			System.out.println("Digite o seu primeiro nome");
+		else if (aux.intern() == "jogador") {
+			System.out.println("Digite seu apelido.\nResposta: ");
 			String nomeJogador = scan.nextLine();
 			
+		}
+		else {
+			System.out.println("Você provavelmente digitou errado!\n"
+						+ "Inicie o programa e tente novamente!!!!");
 		}
 
 	}
