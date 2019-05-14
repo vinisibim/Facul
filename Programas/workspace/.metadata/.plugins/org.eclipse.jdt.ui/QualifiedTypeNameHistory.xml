@@ -4,4 +4,7 @@
 <fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="br.com.uem.din.poo.detetive.preparacao.Administrador"/>
 <fullyQualifiedTypeName name="br.com.uem.din.poo.detetive.administrador.Administrador"/>
+<fullyQualifiedTypeName name="br.com.uem.din.poo.detetive.preparacao.Objetos_Jogo"/>
+<fullyQualifiedTypeName name="br.com.uem.din.poo.detetive.preparacao.Envelope"/>
+<fullyQualifiedTypeName name="java.util.Random"/>
 </qualifiedTypeNameHistroy>

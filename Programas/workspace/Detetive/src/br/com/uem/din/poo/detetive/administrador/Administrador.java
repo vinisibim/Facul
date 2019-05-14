@@ -20,6 +20,7 @@ public class Administrador {
 		String opcao = scan.nextLine();
 		String[] separa = opcao.split("\\s+");
 
+		//A partir daqui chama os metodos de alteração dos objetos do jogo
 		if (separa[0].intern() == "criar" && separa[1].intern() == "suspeito") {
 			System.out.println("Deu certo");
 
